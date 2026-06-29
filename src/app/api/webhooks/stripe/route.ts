@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { getOrder, updateOrder } from "@/lib/orders";
-import {
-  sendOrderConfirmationEmail,
-  sendAdminNotificationEmail,
-} from "@/lib/email";
+import { sendOrderEmails } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -47,8 +44,7 @@ export async function POST(request: NextRequest) {
           stripeSessionId: session.id,
         });
         if (updated) {
-          await sendOrderConfirmationEmail(updated);
-          await sendAdminNotificationEmail(updated);
+          await sendOrderEmails(updated);
         }
       }
     }
